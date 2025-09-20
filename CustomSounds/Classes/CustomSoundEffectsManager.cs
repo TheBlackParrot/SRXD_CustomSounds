@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
@@ -21,6 +22,14 @@ internal class CustomSoundEffectList
     internal SoundEffect? Voice2Sound;
     internal SoundEffect? Voice1Sound;
     internal SoundEffect? VoiceGoSound;
+    internal readonly Dictionary<string, SoundEffect?> VoiceRankSounds = new()
+    {
+        ["D"] = null,
+        ["C"] = null,
+        ["B"] = null,
+        ["A"] = null,
+        ["S"] = null
+    };
     
     internal SoundEffect? UISelectSound;
     internal SoundEffect? UIBackSound;
@@ -72,6 +81,24 @@ internal class CustomSoundEffectList
         UICompleteFullComboSound = assets.levelCompleteFCSound;
         UICompleteFailedSound = assets.trackFailedSound;
         UICompleteSound = assets.trackCompleteSound;
+        
+        // can't use foreach here, results in an invalid operation since the enumerable can't be modified
+        for(int idx = 0; idx < VoiceRankSounds.Count; idx++)
+        {
+            string rank = VoiceRankSounds.ElementAt(idx).Key;
+            
+            foreach (SoundEffectAssets.LevelCompleteRankSound levelCompleteRankSound in assets.levelCompleteRankSounds)
+            {
+                if (!levelCompleteRankSound.IsValidForRankStr(rank))
+                {
+                    continue;
+                }
+                
+                Plugin.Log.LogInfo($"{rank} is valid for ({string.Join(", ", levelCompleteRankSound.ranks)})");
+                VoiceRankSounds[rank] = levelCompleteRankSound.sound;
+                break;
+            }
+        }
     }
 
     internal void SetSoundAssets()
@@ -89,6 +116,10 @@ internal class CustomSoundEffectList
         SoundEffectAssets.Instance.voice2Sound = Voice2Sound ?? defaults.Voice2Sound!.Value;
         SoundEffectAssets.Instance.voice1Sound = Voice1Sound ?? defaults.Voice1Sound!.Value;
         SoundEffectAssets.Instance.voiceGoSound = VoiceGoSound ?? defaults.VoiceGoSound!.Value;
+        List<SoundEffectAssets.LevelCompleteRankSound> tempRankSoundList = [];
+        tempRankSoundList.AddRange(VoiceRankSounds.Keys.Select(rank => new SoundEffectAssets.LevelCompleteRankSound()
+            { ranks = [rank, $"{rank}+"], sound = VoiceRankSounds[rank] ?? defaults.VoiceRankSounds[rank]!.Value }));
+        SoundEffectAssets.Instance.levelCompleteRankSounds = tempRankSoundList.ToArray();
 
         SoundEffectAssets.Instance.uiNavigationSelectionSound = UIHoverSound ?? defaults.UIHoverSound!.Value;
         SoundEffectAssets.Instance.backSound = UIBackSound ?? defaults.UIBackSound!.Value;
@@ -106,6 +137,11 @@ internal class CustomSoundEffectList
 
         SoundEffectAssets.Instance.endSongCrowdSound = EndSongCrowdSound ?? defaults.EndSongCrowdSound!.Value;
         SoundEffectAssets.Instance.trackCompleteCrowdSound = TrackCompleteCrowdSound ?? defaults.TrackCompleteCrowdSound!.Value;
+        
+        foreach (SoundEffectAssets.LevelCompleteRankSound instanceLevelCompleteRankSound in SoundEffectAssets.Instance.levelCompleteRankSounds)
+        {
+            Plugin.Log.LogInfo($"{string.Join(", ", instanceLevelCompleteRankSound.ranks)}");
+        }
     }
 }
 
@@ -258,6 +294,13 @@ internal static class CustomSoundEffectsManager
         SoundEffectLists[packFolder].Voice2Sound = await InitSoundEffectObject($"{packFolder}/Announcer2");
         SoundEffectLists[packFolder].Voice1Sound = await InitSoundEffectObject($"{packFolder}/Announcer1");
         SoundEffectLists[packFolder].VoiceGoSound = await InitSoundEffectObject($"{packFolder}/AnnouncerGo");
+        
+        // can't use foreach here, results in an invalid operation since the enumerable can't be modified
+        for (int idx = 0; idx < SoundEffectLists[packFolder].VoiceRankSounds.Count; idx++)
+        {
+            string rank = SoundEffectLists[packFolder].VoiceRankSounds.ElementAt(idx).Key;
+            SoundEffectLists[packFolder].VoiceRankSounds[rank] = await InitSoundEffectObject($"{packFolder}/AnnouncerForRank/{rank}");
+        }
         
         SoundEffectLists[packFolder].UIHoverSound = await InitSoundEffectObject($"{packFolder}/UIHover");
         SoundEffectLists[packFolder].UIBackSound = await InitSoundEffectObject($"{packFolder}/UIBack");
