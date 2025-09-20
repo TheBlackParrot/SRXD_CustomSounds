@@ -46,7 +46,8 @@ internal class CustomSoundEffectList
     internal SoundEffect? UICompleteSound;
     internal SoundEffect? UICompleteFullComboSound;
     internal SoundEffect? UICompletePerfectFullComboSound;
-    internal SoundEffect? UICompleteFailedSound;
+    
+    internal SoundEffect? CrowdFailureSound;
     
     internal SoundEffect? EndSongCrowdSound;
     internal SoundEffect? TrackCompleteCrowdSound;
@@ -82,7 +83,6 @@ internal class CustomSoundEffectList
 
         UICompletePerfectFullComboSound = assets.levelCompletePFCSound;
         UICompleteFullComboSound = assets.levelCompleteFCSound;
-        UICompleteFailedSound = assets.trackFailedSound;
         UICompleteSound = assets.trackCompleteSound;
         
         // can't use foreach here, results in an invalid operation since the enumerable can't be modified
@@ -138,7 +138,6 @@ internal class CustomSoundEffectList
         SoundEffectAssets.Instance.trackCompleteSound = UICompleteSound ?? defaults.UICompleteSound!.Value;
         SoundEffectAssets.Instance.levelCompleteFCSound = UICompleteFullComboSound ?? defaults.UICompleteFullComboSound!.Value;
         SoundEffectAssets.Instance.levelCompletePFCSound = UICompletePerfectFullComboSound ?? defaults.UICompletePerfectFullComboSound!.Value;
-        SoundEffectAssets.Instance.trackFailedSound = UICompleteFailedSound ?? defaults.UICompleteFailedSound!.Value;
 
         SoundEffectAssets.Instance.endSongCrowdSound = EndSongCrowdSound ?? defaults.EndSongCrowdSound!.Value;
         SoundEffectAssets.Instance.trackCompleteCrowdSound = TrackCompleteCrowdSound ?? defaults.TrackCompleteCrowdSound!.Value;
@@ -319,7 +318,8 @@ internal static class CustomSoundEffectsManager
         SoundEffectLists[packFolder].UICompleteSound = await InitSoundEffectObject($"{packFolder}/UIComplete");
         SoundEffectLists[packFolder].UICompleteFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompleteFullCombo");
         SoundEffectLists[packFolder].UICompletePerfectFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompletePerfectFullCombo");
-        SoundEffectLists[packFolder].UICompleteFailedSound = await InitSoundEffectObject($"{packFolder}/UICompleteFailed"); // unused?
+        
+        SoundEffectLists[packFolder].CrowdFailureSound = await InitSoundEffectObject($"{packFolder}/CrowdFailure");
 
         SoundEffectLists[packFolder].EndSongCrowdSound = await InitSoundEffectObject($"{packFolder}/EndSongCrowd"); // unused?
         SoundEffectLists[packFolder].TrackCompleteCrowdSound = await InitSoundEffectObject($"{packFolder}/TrackCompleteCrowd"); // unused?
@@ -387,6 +387,16 @@ internal static class CustomSoundEffectsManager
             case "PFC1":
                 SoundEffectLists["Default"].VoicePerfectFullComboSound ??= soundEffect;
                 soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].VoicePerfectFullComboSound ?? soundEffect;
+                break;
+            
+            case "UILevelUpLoop":
+                // wtf
+                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceIncreasingSound ?? soundEffect;
+                break;
+            
+            case "CrowdFailure1":
+                SoundEffectLists["Default"].CrowdFailureSound ??= soundEffect;
+                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].CrowdFailureSound ?? soundEffect;
                 break;
         }
     }
