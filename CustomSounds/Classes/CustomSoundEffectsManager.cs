@@ -94,7 +94,9 @@ internal class CustomSoundEffectList
                     continue;
                 }
                 
+#if DEBUG
                 Plugin.Log.LogInfo($"{rank} is valid for ({string.Join(", ", levelCompleteRankSound.ranks)})");
+#endif
                 VoiceRankSounds[rank] = levelCompleteRankSound.sound;
                 break;
             }
@@ -137,11 +139,6 @@ internal class CustomSoundEffectList
 
         SoundEffectAssets.Instance.endSongCrowdSound = EndSongCrowdSound ?? defaults.EndSongCrowdSound!.Value;
         SoundEffectAssets.Instance.trackCompleteCrowdSound = TrackCompleteCrowdSound ?? defaults.TrackCompleteCrowdSound!.Value;
-        
-        foreach (SoundEffectAssets.LevelCompleteRankSound instanceLevelCompleteRankSound in SoundEffectAssets.Instance.levelCompleteRankSounds)
-        {
-            Plugin.Log.LogInfo($"{string.Join(", ", instanceLevelCompleteRankSound.ranks)}");
-        }
     }
 }
 
