@@ -389,6 +389,11 @@ internal static class CustomSoundEffectsManager
                 soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].VoicePerfectFullComboSound ?? soundEffect;
                 break;
             
+            case "UILevelUpStart":
+                // wtf
+                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceStartSound ?? soundEffect;
+                break;
+            
             case "UILevelUpLoop":
                 // wtf
                 soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceIncreasingSound ?? soundEffect;
