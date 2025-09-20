@@ -321,6 +321,7 @@ internal static class CustomSoundEffectsManager
         SoundEffectLists[packFolder].UICompletePerfectFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompletePerfectFullCombo");
         
         SoundEffectLists[packFolder].CrowdFailureSound = await InitSoundEffectObject($"{packFolder}/CrowdFailure");
+        SoundEffectLists[packFolder].ResultsMedalImpactSound = await InitSoundEffectObject($"{packFolder}/ResultsMedalImpact");
 
         SoundEffectLists[packFolder].EndSongCrowdSound = await InitSoundEffectObject($"{packFolder}/EndSongCrowd"); // unused?
         SoundEffectLists[packFolder].TrackCompleteCrowdSound = await InitSoundEffectObject($"{packFolder}/TrackCompleteCrowd"); // unused?
