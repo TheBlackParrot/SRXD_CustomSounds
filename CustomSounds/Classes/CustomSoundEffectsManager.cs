@@ -48,6 +48,7 @@ internal class CustomSoundEffectList
     internal SoundEffect? UICompletePerfectFullComboSound;
     
     internal SoundEffect? CrowdFailureSound;
+    internal SoundEffect? ResultsMedalImpactSound;
     
     internal SoundEffect? EndSongCrowdSound;
     internal SoundEffect? TrackCompleteCrowdSound;
@@ -397,6 +398,11 @@ internal static class CustomSoundEffectsManager
             case "UILevelUpLoop":
                 // wtf
                 soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceIncreasingSound ?? soundEffect;
+                break;
+            
+            case "UIResultsScoreMedalReveal":
+                SoundEffectLists["Default"].ResultsMedalImpactSound ??= soundEffect;
+                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].ResultsMedalImpactSound ?? soundEffect;
                 break;
             
             case "CrowdFailure1":
