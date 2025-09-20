@@ -394,7 +394,7 @@ internal static class CustomSoundEffectsManager
     [HarmonyPatch(typeof(SoundEffectAssets), nameof(SoundEffectAssets.GetSoundEffect))]
     [HarmonyPostfix]
     // ReSharper disable once InconsistentNaming
-    private static void PatchColoredHitNoteSoundEffect(ref string soundEffectName, ref SoundEffect __result)
+    private static void PatchSoundEffectAssetsGet(ref string soundEffectName, ref SoundEffect __result)
     {
         if (Plugin.ActivePackName.Value == "Default")
         {
