@@ -37,7 +37,7 @@ internal class CustomSoundEffectList
     internal SoundEffect? UISelectSound;
     internal SoundEffect? UIBackSound;
     internal SoundEffect? UIHoverSound;
-    internal SoundEffect? UIPlaySelectedSound;
+    internal SoundEffect? UIPlayHighlightedSound;
     internal SoundEffect? UIConfirmPlaySound;
     internal SoundEffect? UIChangeDifficultySound;
     internal SoundEffect? UIExperienceIncreasingSound;
@@ -309,16 +309,16 @@ internal static class CustomSoundEffectsManager
         SoundEffectLists[packFolder].UIBackSound = await InitSoundEffectObject($"{packFolder}/UIBack");
         SoundEffectLists[packFolder].UISelectSound = await InitSoundEffectObject($"{packFolder}/UISelect");
         
-        SoundEffectLists[packFolder].UIPlaySelectedSound = await InitSoundEffectObject($"{packFolder}/UIPlaySelected");
+        SoundEffectLists[packFolder].UIPlayHighlightedSound = await InitSoundEffectObject($"{packFolder}/UIPlayHighlighted");
         SoundEffectLists[packFolder].UIConfirmPlaySound = await InitSoundEffectObject($"{packFolder}/UIConfirmPlay");
         
         SoundEffectLists[packFolder].UIChangeDifficultySound = await InitSoundEffectObject($"{packFolder}/UIChangeDifficulty"); // unused?
         SoundEffectLists[packFolder].UIExperienceIncreasingSound = await InitSoundEffectObject($"{packFolder}/UIExperienceIncreasing");
         SoundEffectLists[packFolder].UIExperienceStartSound = await InitSoundEffectObject($"{packFolder}/UIExperienceStart");
         SoundEffectLists[packFolder].UILevelUpSound = await InitSoundEffectObject($"{packFolder}/UILevelUp");
-        SoundEffectLists[packFolder].UICompleteSound = await InitSoundEffectObject($"{packFolder}/UIComplete");
-        SoundEffectLists[packFolder].UICompleteFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompleteFullCombo");
-        SoundEffectLists[packFolder].UICompletePerfectFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompletePerfectFullCombo");
+        SoundEffectLists[packFolder].UICompleteSound = await InitSoundEffectObject($"{packFolder}/UIComplete"); // unused?
+        SoundEffectLists[packFolder].UICompleteFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompleteFullCombo"); // unused?
+        SoundEffectLists[packFolder].UICompletePerfectFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompletePerfectFullCombo"); // unused?
         
         SoundEffectLists[packFolder].CrowdFailureSound = await InitSoundEffectObject($"{packFolder}/CrowdFailure");
         SoundEffectLists[packFolder].ResultsMedalImpactSound = await InitSoundEffectObject($"{packFolder}/ResultsMedalImpact");
@@ -470,9 +470,9 @@ internal static class CustomSoundEffectsManager
                 return;
             
             case "PlaySelected":
-                if (soundList.UIPlaySelectedSound != null)
+                if (soundList.UIPlayHighlightedSound != null)
                 {
-                    __result = soundList.UIPlaySelectedSound.Value;
+                    __result = soundList.UIPlayHighlightedSound.Value;
                 }
                 return;
         }
