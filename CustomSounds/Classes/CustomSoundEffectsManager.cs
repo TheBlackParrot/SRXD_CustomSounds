@@ -22,6 +22,9 @@ internal class CustomSoundEffectList
     internal SoundEffect? Voice2Sound;
     internal SoundEffect? Voice1Sound;
     internal SoundEffect? VoiceGoSound;
+    internal SoundEffect? VoiceCompleteSound;
+    internal SoundEffect? VoiceFullComboSound;
+    internal SoundEffect? VoicePerfectFullComboSound;
     internal readonly Dictionary<string, SoundEffect?> VoiceRankSounds = new()
     {
         ["D"] = null,
@@ -291,6 +294,9 @@ internal static class CustomSoundEffectsManager
         SoundEffectLists[packFolder].Voice2Sound = await InitSoundEffectObject($"{packFolder}/Announcer2");
         SoundEffectLists[packFolder].Voice1Sound = await InitSoundEffectObject($"{packFolder}/Announcer1");
         SoundEffectLists[packFolder].VoiceGoSound = await InitSoundEffectObject($"{packFolder}/AnnouncerGo");
+        SoundEffectLists[packFolder].VoiceCompleteSound = await InitSoundEffectObject($"{packFolder}/AnnouncerComplete");
+        SoundEffectLists[packFolder].VoiceFullComboSound = await InitSoundEffectObject($"{packFolder}/AnnouncerFullCombo");
+        SoundEffectLists[packFolder].VoicePerfectFullComboSound = await InitSoundEffectObject($"{packFolder}/AnnouncerPerfectFullCombo");
         
         // can't use foreach here, results in an invalid operation since the enumerable can't be modified
         for (int idx = 0; idx < SoundEffectLists[packFolder].VoiceRankSounds.Count; idx++)
@@ -324,6 +330,64 @@ internal static class CustomSoundEffectsManager
         if (showNotifications)
         {
             NotificationSystemGUI.AddMessage($"Loaded sound pack <b>{packFolder}</b>!");
+        }
+    }
+    
+#if DEBUG
+    [HarmonyPatch(typeof(SoundEffectPlayer), nameof(SoundEffectPlayer.PlayOneShot))]
+    [HarmonyPatch(typeof(SoundEffectPlayer), nameof(SoundEffectPlayer.PlayOneShotScheduled))]
+    [HarmonyPatch(typeof(SoundEffectPlayer), nameof(SoundEffectPlayer.PlayLooping))]
+    [HarmonyPrefix]
+    // ReSharper disable once InconsistentNaming
+    private static void TellMeWhichSoundsArePlayingPlease(ref SoundEffect soundEffect)
+    {
+        if (soundEffect.clips == null)
+        {
+            return;
+        }
+        if (soundEffect.clips[0] == null)
+        {
+            return;
+        }
+        
+        Plugin.Log.LogInfo($"--> Playing sound {soundEffect.clips[0].name}");
+    }
+#endif
+    
+    [HarmonyPatch(typeof(SoundEffectPlayer), nameof(SoundEffectPlayer.PlayOneShot))]
+    [HarmonyPatch(typeof(SoundEffectPlayer), nameof(SoundEffectPlayer.PlayOneShotScheduled))]
+    [HarmonyPatch(typeof(SoundEffectPlayer), nameof(SoundEffectPlayer.PlayLooping))]
+    [HarmonyPrefix]
+    // ReSharper disable once InconsistentNaming
+    private static void ChangeSoundsTheHardWay(ref SoundEffect soundEffect)
+    {
+        if (soundEffect.clips == null)
+        {
+            return;
+        }
+        if (soundEffect.clips[0] == null)
+        {
+            return;
+        }
+        
+        switch (soundEffect.clips[0].name)
+        {
+            // honestly i probably don't need to set defaults since null will just, not modify the sound, but like, you never know
+            
+            case "TrackCompleteXD":
+                SoundEffectLists["Default"].VoiceCompleteSound ??= soundEffect;
+                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].VoiceCompleteSound ?? soundEffect;
+                break;
+            
+            case "FC1":
+                SoundEffectLists["Default"].VoiceFullComboSound ??= soundEffect;
+                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].VoiceFullComboSound ?? soundEffect;
+                break;
+            
+            case "PFC1":
+                SoundEffectLists["Default"].VoicePerfectFullComboSound ??= soundEffect;
+                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].VoicePerfectFullComboSound ?? soundEffect;
+                break;
         }
     }
     
