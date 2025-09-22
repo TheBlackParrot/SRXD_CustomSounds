@@ -395,11 +395,6 @@ internal static class CustomSoundEffectsManager
                 soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceStartSound ?? soundEffect;
                 break;
             
-            case "UILevelUpLoop":
-                // wtf
-                //soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceIncreasingSound ?? soundEffect;
-                break;
-            
             case "UIResultsScoreMedalReveal":
                 SoundEffectLists["Default"].ResultsMedalImpactSound ??= soundEffect;
                 soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].ResultsMedalImpactSound ?? soundEffect;
@@ -429,6 +424,7 @@ internal static class CustomSoundEffectsManager
         switch (soundEffect.clips[0].name)
         {
             case "UILevelUpLoop":
+                // i hate looking at this. hate hate hate hate h
                 __result.Stop();
                 __result.clip = (SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceIncreasingSound ?? soundEffect).clips.GetRandomElementOrDefault<AudioClip>();
                 __result.Play();
