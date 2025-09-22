@@ -358,7 +358,6 @@ internal static class CustomSoundEffectsManager
     
     [HarmonyPatch(typeof(SoundEffectPlayer), nameof(SoundEffectPlayer.PlayOneShot))]
     [HarmonyPatch(typeof(SoundEffectPlayer), nameof(SoundEffectPlayer.PlayOneShotScheduled))]
-    [HarmonyPatch(typeof(SoundEffectPlayer), nameof(SoundEffectPlayer.PlayLooping))]
     [HarmonyPrefix]
     // ReSharper disable once InconsistentNaming
     private static void ChangeSoundsTheHardWay(ref SoundEffect soundEffect)
@@ -398,7 +397,7 @@ internal static class CustomSoundEffectsManager
             
             case "UILevelUpLoop":
                 // wtf
-                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceIncreasingSound ?? soundEffect;
+                //soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceIncreasingSound ?? soundEffect;
                 break;
             
             case "UIResultsScoreMedalReveal":
@@ -412,7 +411,31 @@ internal static class CustomSoundEffectsManager
                 break;
         }
     }
-    
+
+    [HarmonyPatch(typeof(SoundEffectPlayer), nameof(SoundEffectPlayer.PlayLooping))]
+    [HarmonyPostfix]
+    // ReSharper disable once InconsistentNaming
+    private static void ChangeLoopingSoundsTheHardWay(AudioSource __result, ref SoundEffect soundEffect)
+    {
+        if (soundEffect.clips == null)
+        {
+            return;
+        }
+        if (soundEffect.clips[0] == null)
+        {
+            return;
+        }
+
+        switch (soundEffect.clips[0].name)
+        {
+            case "UILevelUpLoop":
+                __result.Stop();
+                __result.clip = (SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceIncreasingSound ?? soundEffect).clips.GetRandomElementOrDefault<AudioClip>();
+                __result.Play();
+                break;
+        }
+    }
+
     [HarmonyPatch(typeof(SoundEffectAssets), nameof(SoundEffectAssets.GetSoundEffect))]
     [HarmonyPostfix]
     // ReSharper disable once InconsistentNaming
