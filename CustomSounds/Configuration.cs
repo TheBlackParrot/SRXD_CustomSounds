@@ -21,6 +21,7 @@ public partial class Plugin
     private void RegisterConfigEntries()
     {
         TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}Name", nameof(CustomSounds));
+        TranslationHelper.AddTranslation($"{nameof(CustomSounds)}_GitHubButtonText", $"{nameof(CustomSounds)} Releases (GitHub)");
         
         ActivePackName =
             Config.Bind("General", nameof(ActivePackName), "Default", "Name of the active sound pack");
@@ -86,5 +87,10 @@ public partial class Plugin
         });
         activePackNameInput.InputField.SetText(ActivePackName.Value);
         #endregion
+        
+        UIHelper.CreateButton(modGroup, $"Open{MyPluginInfo.PLUGIN_NAME}RepositoryButton", $"{nameof(CustomSounds)}_GitHubButtonText", () =>
+        {
+            Application.OpenURL($"https://github.com/{REPO_AUTHOR}/{REPO_NAME}/releases/latest");
+        });
     }
 }

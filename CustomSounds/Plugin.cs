@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BepInEx;
 using BepInEx.Logging;
 using CustomSounds.Classes;
 using HarmonyLib;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace CustomSounds;
@@ -16,6 +18,9 @@ public partial class Plugin : BaseUnityPlugin
     internal static ManualLogSource Log = null!;
     private static Harmony _harmony = null!;
     internal static string DataPath => Path.Combine(Paths.ConfigPath, nameof(CustomSounds));
+
+    private const string REPO_NAME = $"SRXD_{MyPluginInfo.PLUGIN_NAME}";
+    private const string REPO_AUTHOR = "TheBlackParrot";
 
     private void Awake()
     {
@@ -58,6 +63,64 @@ public partial class Plugin : BaseUnityPlugin
                 await CustomSoundEffectsManager.InitializeSounds(ActivePackName.Value, false);
             }
             catch (Exception e)
+            {
+                Log.LogError(e);
+            }
+        });
+        
+        Task.Run(async () =>
+        {
+            try
+            {
+                HttpClient httpClient = new();
+                httpClient.DefaultRequestHeaders.Add("User-Agent",
+                    $"{MyPluginInfo.PLUGIN_NAME}/{MyPluginInfo.PLUGIN_VERSION} (https://github.com/TheBlackParrot/{REPO_NAME})");
+                HttpResponseMessage responseMessage = await httpClient.GetAsync(
+                    $"https://api.github.com/repos/{REPO_AUTHOR}/{REPO_NAME}/releases/latest");
+                responseMessage.EnsureSuccessStatusCode();
+                string json = await responseMessage.Content.ReadAsStringAsync();
+
+                ReleaseVersion? releaseVersion = JsonConvert.DeserializeObject<ReleaseVersion>(json);
+                if (releaseVersion == null)
+                {
+                    Log.LogInfo("Could not get newest release version information");
+                    return;
+                }
+
+                if (releaseVersion.Version == null)
+                {
+                    Log.LogInfo("Could not get newest release version information");
+                    return;
+                }
+
+                if (releaseVersion.IsPreRelease)
+                {
+                    Log.LogInfo("Newest release version is a pre-release");
+                    return;
+                }
+
+                Version currentVersion = new(MyPluginInfo.PLUGIN_VERSION);
+                Version latestVersion = new(releaseVersion.Version);
+#if DEBUG
+                // just so we can see the notifications
+                if (currentVersion != latestVersion)
+#else
+                if (currentVersion < latestVersion)
+#endif
+                {
+                    Log.LogMessage(
+                        $"{MyPluginInfo.PLUGIN_NAME} is out of date! (using v{currentVersion}, latest is v{latestVersion})");
+
+                    await Awaitable.MainThreadAsync();
+                    NotificationSystemGUI.AddMessage(
+                        $"<b>{MyPluginInfo.PLUGIN_NAME}</b> has an update available! <alpha=#AA>(v{currentVersion} <alpha=#77>-> <alpha=#AA>v{latestVersion})\n<alpha=#FF><size=67%>See the shortcut button in the Mod Settings page to grab the latest update.",
+                        15f);
+                }
+                else
+                {
+                    Log.LogMessage($"{MyPluginInfo.PLUGIN_NAME} is up to date!");
+                }
+            } catch(Exception e)
             {
                 Log.LogError(e);
             }
