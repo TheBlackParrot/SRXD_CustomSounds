@@ -53,6 +53,8 @@ internal class CustomSoundEffectList
     
     internal SoundEffect? EndSongCrowdSound;
     internal SoundEffect? TrackCompleteCrowdSound;
+    
+    internal SoundEffect? EditorClapSound;
 #pragma warning restore CS0649
 
     internal CustomSoundEffectList() {}
@@ -86,6 +88,8 @@ internal class CustomSoundEffectList
         UICompletePerfectFullComboSound = assets.levelCompletePFCSound;
         UICompleteFullComboSound = assets.levelCompleteFCSound;
         UICompleteSound = assets.trackCompleteSound;
+
+        EditorClapSound = assets.clapNote;
         
         // can't use foreach here, results in an invalid operation since the enumerable can't be modified
         for(int idx = 0; idx < VoiceRankSounds.Count; idx++)
@@ -144,6 +148,8 @@ internal class CustomSoundEffectList
 
         assets.endSongCrowdSound = EndSongCrowdSound ?? defaults.EndSongCrowdSound!.Value;
         assets.trackCompleteCrowdSound = TrackCompleteCrowdSound ?? defaults.TrackCompleteCrowdSound!.Value;
+        
+        assets.clapNote = EditorClapSound ?? defaults.EditorClapSound!.Value;
     }
 }
 
@@ -327,6 +333,8 @@ internal static class CustomSoundEffectsManager
 
         assets.EndSongCrowdSound = await InitSoundEffectObject($"{packFolder}/EndSongCrowd"); // unused?
         assets.TrackCompleteCrowdSound = await InitSoundEffectObject($"{packFolder}/TrackCompleteCrowd"); // unused?
+        
+        assets.EditorClapSound = await InitSoundEffectObject($"{packFolder}/EditorClap");
         
         Plugin.ActivePackName.Value = packFolder;
         assets.SetSoundAssets();
