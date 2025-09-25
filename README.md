@@ -42,5 +42,6 @@ Create any of these sub-folders inside a folder within `Spin Rhythm/BepInEx/conf
 | **UILevelUp**                 | Sound that plays when leveling up                                                                                                                                                    |
 | **CrowdFailure**              | Sound that plays when failing a map                                                                                                                                                  |
 | **ResultsMedalImpact**        | Impact sound that plays when the medal is revealed for your rank on the results screen                                                                                               |
+| **EditorClap**                | Clap sound used in the editor                                                                                                                                                        |
 
 The mod will look for audio files ending in `.mp3`, `.ogg`, and `.wav`. Empty folders will disable the sound entirely.
