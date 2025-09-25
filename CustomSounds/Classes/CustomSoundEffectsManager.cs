@@ -110,38 +110,39 @@ internal class CustomSoundEffectList
     internal void SetSoundAssets()
     {
         CustomSoundEffectList defaults = CustomSoundEffectsManager.SoundEffectLists["Default"];
+        SoundEffectAssets assets = SoundEffectAssets.Instance;
         
-        SoundEffectAssets.Instance.coloredNoteSoundEffect = MatchNoteHitSound ?? defaults.MatchNoteHitSound!.Value;
-        SoundEffectAssets.Instance.coloredHitNoteSoundEffect = TapNoteHitSound ?? defaults.TapNoteHitSound!.Value;
-        SoundEffectAssets.Instance.drumHitSoundEffect = BeatHitSound ?? defaults.BeatHitSound!.Value;
-        SoundEffectAssets.Instance.spinnerNoteSoundEffect = SpinHitSound ?? defaults.SpinHitSound!.Value;
-        SoundEffectAssets.Instance.scratchNoteSoundEffect = ScratchHitSound ?? defaults.ScratchHitSound!.Value;
+        assets.coloredNoteSoundEffect = MatchNoteHitSound ?? defaults.MatchNoteHitSound!.Value;
+        assets.coloredHitNoteSoundEffect = TapNoteHitSound ?? defaults.TapNoteHitSound!.Value;
+        assets.drumHitSoundEffect = BeatHitSound ?? defaults.BeatHitSound!.Value;
+        assets.spinnerNoteSoundEffect = SpinHitSound ?? defaults.SpinHitSound!.Value;
+        assets.scratchNoteSoundEffect = ScratchHitSound ?? defaults.ScratchHitSound!.Value;
         
-        SoundEffectAssets.Instance.voiceReadySound = VoiceReadySound ?? defaults.VoiceReadySound!.Value;
-        SoundEffectAssets.Instance.voice3Sound = Voice3Sound ?? defaults.Voice3Sound!.Value;
-        SoundEffectAssets.Instance.voice2Sound = Voice2Sound ?? defaults.Voice2Sound!.Value;
-        SoundEffectAssets.Instance.voice1Sound = Voice1Sound ?? defaults.Voice1Sound!.Value;
-        SoundEffectAssets.Instance.voiceGoSound = VoiceGoSound ?? defaults.VoiceGoSound!.Value;
+        assets.voiceReadySound = VoiceReadySound ?? defaults.VoiceReadySound!.Value;
+        assets.voice3Sound = Voice3Sound ?? defaults.Voice3Sound!.Value;
+        assets.voice2Sound = Voice2Sound ?? defaults.Voice2Sound!.Value;
+        assets.voice1Sound = Voice1Sound ?? defaults.Voice1Sound!.Value;
+        assets.voiceGoSound = VoiceGoSound ?? defaults.VoiceGoSound!.Value;
         List<SoundEffectAssets.LevelCompleteRankSound> tempRankSoundList = [];
         tempRankSoundList.AddRange(VoiceRankSounds.Keys.Select(rank => new SoundEffectAssets.LevelCompleteRankSound()
             { ranks = [rank, $"{rank}+"], sound = VoiceRankSounds[rank] ?? defaults.VoiceRankSounds[rank]!.Value }));
-        SoundEffectAssets.Instance.levelCompleteRankSounds = tempRankSoundList.ToArray();
+        assets.levelCompleteRankSounds = tempRankSoundList.ToArray();
 
-        SoundEffectAssets.Instance.uiNavigationSelectionSound = UIHoverSound ?? defaults.UIHoverSound!.Value;
-        SoundEffectAssets.Instance.backSound = UIBackSound ?? defaults.UIBackSound!.Value;
-        SoundEffectAssets.Instance.forwardSound = UISelectSound ?? defaults.UISelectSound!.Value;
-        SoundEffectAssets.Instance.playSongSound = UIConfirmPlaySound ?? defaults.UIConfirmPlaySound!.Value;
+        assets.uiNavigationSelectionSound = UIHoverSound ?? defaults.UIHoverSound!.Value;
+        assets.backSound = UIBackSound ?? defaults.UIBackSound!.Value;
+        assets.forwardSound = UISelectSound ?? defaults.UISelectSound!.Value;
+        assets.playSongSound = UIConfirmPlaySound ?? defaults.UIConfirmPlaySound!.Value;
         
-        SoundEffectAssets.Instance.changeDifficultySound = UIChangeDifficultySound ?? defaults.UIChangeDifficultySound!.Value;
-        SoundEffectAssets.Instance.expUpLoop = UIExperienceIncreasingSound ?? defaults.UIExperienceIncreasingSound!.Value;
-        SoundEffectAssets.Instance.expUpStart = UIExperienceStartSound ?? defaults.UIExperienceStartSound!.Value;
-        SoundEffectAssets.Instance.levelUpAchieved = UILevelUpSound ?? defaults.UILevelUpSound!.Value;
-        SoundEffectAssets.Instance.trackCompleteSound = UICompleteSound ?? defaults.UICompleteSound!.Value;
-        SoundEffectAssets.Instance.levelCompleteFCSound = UICompleteFullComboSound ?? defaults.UICompleteFullComboSound!.Value;
-        SoundEffectAssets.Instance.levelCompletePFCSound = UICompletePerfectFullComboSound ?? defaults.UICompletePerfectFullComboSound!.Value;
+        assets.changeDifficultySound = UIChangeDifficultySound ?? defaults.UIChangeDifficultySound!.Value;
+        assets.expUpLoop = UIExperienceIncreasingSound ?? defaults.UIExperienceIncreasingSound!.Value;
+        assets.expUpStart = UIExperienceStartSound ?? defaults.UIExperienceStartSound!.Value;
+        assets.levelUpAchieved = UILevelUpSound ?? defaults.UILevelUpSound!.Value;
+        assets.trackCompleteSound = UICompleteSound ?? defaults.UICompleteSound!.Value;
+        assets.levelCompleteFCSound = UICompleteFullComboSound ?? defaults.UICompleteFullComboSound!.Value;
+        assets.levelCompletePFCSound = UICompletePerfectFullComboSound ?? defaults.UICompletePerfectFullComboSound!.Value;
 
-        SoundEffectAssets.Instance.endSongCrowdSound = EndSongCrowdSound ?? defaults.EndSongCrowdSound!.Value;
-        SoundEffectAssets.Instance.trackCompleteCrowdSound = TrackCompleteCrowdSound ?? defaults.TrackCompleteCrowdSound!.Value;
+        assets.endSongCrowdSound = EndSongCrowdSound ?? defaults.EndSongCrowdSound!.Value;
+        assets.trackCompleteCrowdSound = TrackCompleteCrowdSound ?? defaults.TrackCompleteCrowdSound!.Value;
     }
 }
 
@@ -282,52 +283,54 @@ internal static class CustomSoundEffectsManager
             SoundEffectLists["Default"].SetSoundAssets();
             return;
         }
+
+        CustomSoundEffectList? assets = SoundEffectLists[packFolder];
         
-        SoundEffectLists[packFolder].MatchNoteHitSound = await InitSoundEffectObject($"{packFolder}/MatchNoteHit", 0.75f);
-        SoundEffectLists[packFolder].TapNoteHitSound = await InitSoundEffectObject($"{packFolder}/TapNoteHit");
-        SoundEffectLists[packFolder].BeatHitSound = await InitSoundEffectObject($"{packFolder}/BeatHit");
-        SoundEffectLists[packFolder].SpinHitSound = await InitSoundEffectObject($"{packFolder}/SpinHit");
-        SoundEffectLists[packFolder].ScratchHitSound = await InitSoundEffectObject($"{packFolder}/ScratchHit");
+        assets.MatchNoteHitSound = await InitSoundEffectObject($"{packFolder}/MatchNoteHit", 0.75f);
+        assets.TapNoteHitSound = await InitSoundEffectObject($"{packFolder}/TapNoteHit");
+        assets.BeatHitSound = await InitSoundEffectObject($"{packFolder}/BeatHit");
+        assets.SpinHitSound = await InitSoundEffectObject($"{packFolder}/SpinHit");
+        assets.ScratchHitSound = await InitSoundEffectObject($"{packFolder}/ScratchHit");
         
-        SoundEffectLists[packFolder].VoiceReadySound = await InitSoundEffectObject($"{packFolder}/AnnouncerReady");
-        SoundEffectLists[packFolder].Voice3Sound = await InitSoundEffectObject($"{packFolder}/Announcer3");
-        SoundEffectLists[packFolder].Voice2Sound = await InitSoundEffectObject($"{packFolder}/Announcer2");
-        SoundEffectLists[packFolder].Voice1Sound = await InitSoundEffectObject($"{packFolder}/Announcer1");
-        SoundEffectLists[packFolder].VoiceGoSound = await InitSoundEffectObject($"{packFolder}/AnnouncerGo");
-        SoundEffectLists[packFolder].VoiceCompleteSound = await InitSoundEffectObject($"{packFolder}/AnnouncerComplete");
-        SoundEffectLists[packFolder].VoiceFullComboSound = await InitSoundEffectObject($"{packFolder}/AnnouncerFullCombo");
-        SoundEffectLists[packFolder].VoicePerfectFullComboSound = await InitSoundEffectObject($"{packFolder}/AnnouncerPerfectFullCombo");
+        assets.VoiceReadySound = await InitSoundEffectObject($"{packFolder}/AnnouncerReady");
+        assets.Voice3Sound = await InitSoundEffectObject($"{packFolder}/Announcer3");
+        assets.Voice2Sound = await InitSoundEffectObject($"{packFolder}/Announcer2");
+        assets.Voice1Sound = await InitSoundEffectObject($"{packFolder}/Announcer1");
+        assets.VoiceGoSound = await InitSoundEffectObject($"{packFolder}/AnnouncerGo");
+        assets.VoiceCompleteSound = await InitSoundEffectObject($"{packFolder}/AnnouncerComplete");
+        assets.VoiceFullComboSound = await InitSoundEffectObject($"{packFolder}/AnnouncerFullCombo");
+        assets.VoicePerfectFullComboSound = await InitSoundEffectObject($"{packFolder}/AnnouncerPerfectFullCombo");
         
         // can't use foreach here, results in an invalid operation since the enumerable can't be modified
-        for (int idx = 0; idx < SoundEffectLists[packFolder].VoiceRankSounds.Count; idx++)
+        for (int idx = 0; idx < assets.VoiceRankSounds.Count; idx++)
         {
-            string rank = SoundEffectLists[packFolder].VoiceRankSounds.ElementAt(idx).Key;
-            SoundEffectLists[packFolder].VoiceRankSounds[rank] = await InitSoundEffectObject($"{packFolder}/AnnouncerForRank/{rank}");
+            string rank = assets.VoiceRankSounds.ElementAt(idx).Key;
+            assets.VoiceRankSounds[rank] = await InitSoundEffectObject($"{packFolder}/AnnouncerForRank/{rank}");
         }
         
-        SoundEffectLists[packFolder].UIHoverSound = await InitSoundEffectObject($"{packFolder}/UIHover");
-        SoundEffectLists[packFolder].UIBackSound = await InitSoundEffectObject($"{packFolder}/UIBack");
-        SoundEffectLists[packFolder].UISelectSound = await InitSoundEffectObject($"{packFolder}/UISelect");
+        assets.UIHoverSound = await InitSoundEffectObject($"{packFolder}/UIHover");
+        assets.UIBackSound = await InitSoundEffectObject($"{packFolder}/UIBack");
+        assets.UISelectSound = await InitSoundEffectObject($"{packFolder}/UISelect");
         
-        SoundEffectLists[packFolder].UIPlayHighlightedSound = await InitSoundEffectObject($"{packFolder}/UIPlayHighlighted");
-        SoundEffectLists[packFolder].UIConfirmPlaySound = await InitSoundEffectObject($"{packFolder}/UIConfirmPlay");
+        assets.UIPlayHighlightedSound = await InitSoundEffectObject($"{packFolder}/UIPlayHighlighted");
+        assets.UIConfirmPlaySound = await InitSoundEffectObject($"{packFolder}/UIConfirmPlay");
         
-        SoundEffectLists[packFolder].UIChangeDifficultySound = await InitSoundEffectObject($"{packFolder}/UIChangeDifficulty"); // unused?
-        SoundEffectLists[packFolder].UIExperienceIncreasingSound = await InitSoundEffectObject($"{packFolder}/UIExperienceIncreasing");
-        SoundEffectLists[packFolder].UIExperienceStartSound = await InitSoundEffectObject($"{packFolder}/UIExperienceStart");
-        SoundEffectLists[packFolder].UILevelUpSound = await InitSoundEffectObject($"{packFolder}/UILevelUp");
-        SoundEffectLists[packFolder].UICompleteSound = await InitSoundEffectObject($"{packFolder}/UIComplete"); // unused?
-        SoundEffectLists[packFolder].UICompleteFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompleteFullCombo"); // unused?
-        SoundEffectLists[packFolder].UICompletePerfectFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompletePerfectFullCombo"); // unused?
+        assets.UIChangeDifficultySound = await InitSoundEffectObject($"{packFolder}/UIChangeDifficulty"); // unused?
+        assets.UIExperienceIncreasingSound = await InitSoundEffectObject($"{packFolder}/UIExperienceIncreasing");
+        assets.UIExperienceStartSound = await InitSoundEffectObject($"{packFolder}/UIExperienceStart");
+        assets.UILevelUpSound = await InitSoundEffectObject($"{packFolder}/UILevelUp");
+        assets.UICompleteSound = await InitSoundEffectObject($"{packFolder}/UIComplete"); // unused?
+        assets.UICompleteFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompleteFullCombo"); // unused?
+        assets.UICompletePerfectFullComboSound = await InitSoundEffectObject($"{packFolder}/UICompletePerfectFullCombo"); // unused?
         
-        SoundEffectLists[packFolder].CrowdFailureSound = await InitSoundEffectObject($"{packFolder}/CrowdFailure");
-        SoundEffectLists[packFolder].ResultsMedalImpactSound = await InitSoundEffectObject($"{packFolder}/ResultsMedalImpact");
+        assets.CrowdFailureSound = await InitSoundEffectObject($"{packFolder}/CrowdFailure");
+        assets.ResultsMedalImpactSound = await InitSoundEffectObject($"{packFolder}/ResultsMedalImpact");
 
-        SoundEffectLists[packFolder].EndSongCrowdSound = await InitSoundEffectObject($"{packFolder}/EndSongCrowd"); // unused?
-        SoundEffectLists[packFolder].TrackCompleteCrowdSound = await InitSoundEffectObject($"{packFolder}/TrackCompleteCrowd"); // unused?
+        assets.EndSongCrowdSound = await InitSoundEffectObject($"{packFolder}/EndSongCrowd"); // unused?
+        assets.TrackCompleteCrowdSound = await InitSoundEffectObject($"{packFolder}/TrackCompleteCrowd"); // unused?
         
         Plugin.ActivePackName.Value = packFolder;
-        SoundEffectLists[packFolder].SetSoundAssets();
+        assets.SetSoundAssets();
 
         if (showNotifications)
         {
@@ -370,39 +373,42 @@ internal static class CustomSoundEffectsManager
         {
             return;
         }
+
+        CustomSoundEffectList? defaults = SoundEffectLists["Default"];
+        CustomSoundEffectList? activePack = SoundEffectLists[Plugin.ActivePackName.Value];
         
         switch (soundEffect.clips[0].name)
         {
             // honestly i probably don't need to set defaults since null will just, not modify the sound, but like, you never know
             
             case "TrackCompleteXD":
-                SoundEffectLists["Default"].VoiceCompleteSound ??= soundEffect;
-                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].VoiceCompleteSound ?? soundEffect;
+                defaults.VoiceCompleteSound ??= soundEffect;
+                soundEffect = activePack.VoiceCompleteSound ?? soundEffect;
                 break;
             
             case "FC1":
-                SoundEffectLists["Default"].VoiceFullComboSound ??= soundEffect;
-                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].VoiceFullComboSound ?? soundEffect;
+                defaults.VoiceFullComboSound ??= soundEffect;
+                soundEffect = activePack.VoiceFullComboSound ?? soundEffect;
                 break;
             
             case "PFC1":
-                SoundEffectLists["Default"].VoicePerfectFullComboSound ??= soundEffect;
-                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].VoicePerfectFullComboSound ?? soundEffect;
+                defaults.VoicePerfectFullComboSound ??= soundEffect;
+                soundEffect = activePack.VoicePerfectFullComboSound ?? soundEffect;
                 break;
             
             case "UILevelUpStart":
                 // wtf
-                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].UIExperienceStartSound ?? soundEffect;
+                soundEffect = activePack.UIExperienceStartSound ?? soundEffect;
                 break;
             
             case "UIResultsScoreMedalReveal":
-                SoundEffectLists["Default"].ResultsMedalImpactSound ??= soundEffect;
-                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].ResultsMedalImpactSound ?? soundEffect;
+                defaults.ResultsMedalImpactSound ??= soundEffect;
+                soundEffect = activePack.ResultsMedalImpactSound ?? soundEffect;
                 break;
             
             case "CrowdFailure1":
-                SoundEffectLists["Default"].CrowdFailureSound ??= soundEffect;
-                soundEffect = SoundEffectLists[Plugin.ActivePackName.Value].CrowdFailureSound ?? soundEffect;
+                defaults.CrowdFailureSound ??= soundEffect;
+                soundEffect = activePack.CrowdFailureSound ?? soundEffect;
                 break;
         }
     }
