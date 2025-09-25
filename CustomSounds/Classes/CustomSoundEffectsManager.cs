@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HarmonyLib;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -194,22 +195,21 @@ internal static class CustomSoundEffectsManager
                     continue;
             }
             
-            // i'm guessing this has to be here for some funny windows security thing or something
-            // if it's not here, sounds will randomly be empty. not null! but empty.
-            await Awaitable.EndOfFrameAsync();
-            
             // (i'm lazy) (sorry)
-            using UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip($"file://{soundPath}", audioType);
+            using UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip($"file://{soundPath.Replace('\\', '/')}", audioType);
             await request.SendWebRequest();
             
-            await Awaitable.MainThreadAsync();
+            while (!request.isDone)
+            {
+                await Awaitable.EndOfFrameAsync();
+            }
 
             if (request.result != UnityWebRequest.Result.Success)
             {
                 Plugin.Log.LogError(request.error);
                 continue;
             }
-
+            
             AudioClip? clip = DownloadHandlerAudioClip.GetContent(request);
             if (clip == null)
             {
@@ -217,7 +217,6 @@ internal static class CustomSoundEffectsManager
                 continue;
             }
 
-            clip.LoadAudioData();
             if (clip.loadState == AudioDataLoadState.Failed)
             {
                 Plugin.Log.LogError($"{Path.GetFileName(soundPath)} failed to load? uhh...");
