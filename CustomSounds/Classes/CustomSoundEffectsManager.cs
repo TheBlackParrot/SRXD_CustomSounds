@@ -331,7 +331,7 @@ internal static class CustomSoundEffectsManager
         assets.CrowdFailureSound = await InitSoundEffectObject($"{packFolder}/CrowdFailure");
         assets.ResultsMedalImpactSound = await InitSoundEffectObject($"{packFolder}/ResultsMedalImpact");
 
-        assets.EndSongCrowdSound = await InitSoundEffectObject($"{packFolder}/EndSongCrowd"); // unused?
+        assets.EndSongCrowdSound = await InitSoundEffectObject($"{packFolder}/EndSongCrowd");
         assets.TrackCompleteCrowdSound = await InitSoundEffectObject($"{packFolder}/TrackCompleteCrowd"); // unused?
         
         assets.EditorClapSound = await InitSoundEffectObject($"{packFolder}/EditorClap");
