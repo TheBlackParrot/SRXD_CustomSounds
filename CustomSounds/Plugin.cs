@@ -44,6 +44,11 @@ public partial class Plugin : BaseUnityPlugin
     private void OnEnable()
     {
         _harmony.PatchAll();
+        
+        AudioConfiguration audioConfiguration = AudioSettings.GetConfiguration();
+        audioConfiguration.numRealVoices = 255;
+        audioConfiguration.numVirtualVoices = 4095;
+        AudioSettings.Reset(audioConfiguration);
     }
 
     private void OnDisable()
@@ -53,6 +58,10 @@ public partial class Plugin : BaseUnityPlugin
 
     private static void MainCameraOnCurrentCameraChanged(Camera obj)
     {
+        AudioConfiguration audioConfiguration = AudioSettings.GetConfiguration();
+        Log.LogInfo($"real: {audioConfiguration.numRealVoices}");
+        Log.LogInfo($"virtual: {audioConfiguration.numVirtualVoices}");
+        
         MainCamera.OnCurrentCameraChanged -= MainCameraOnCurrentCameraChanged;
         CustomSoundEffectsManager.Initialize();
         
