@@ -200,42 +200,60 @@ internal static class CustomSoundEffectsManager
                     continue;
             }
             
-            // (i'm lazy) (sorry)
-            using UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip($"file://{soundPath.Replace('\\', '/')}", audioType);
-            await request.SendWebRequest();
-            
-            while (!request.isDone)
+            AudioClip? clip;
+            if (audioType is AudioType.WAV or AudioType.AIFF)
             {
+                using UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip($"file://{soundPath.Replace('\\', '/')}", audioType);
+                await request.SendWebRequest();
+            
+                while (!request.isDone)
+                {
+                    await Awaitable.EndOfFrameAsync();
+                }
+
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Plugin.Log.LogError(request.error);
+                    continue;
+                }
+            
+                clip = DownloadHandlerAudioClip.GetContent(request);
+                if (clip == null)
+                {
+                    Plugin.Log.LogError($"{Path.GetFileName(soundPath)} came back null? uhh...");
+                    continue;
+                }
+
+                if (clip.loadState == AudioDataLoadState.Failed)
+                {
+                    Plugin.Log.LogError($"{Path.GetFileName(soundPath)} failed to load? uhh...");
+                    continue;
+                }
+                if (clip.samples == 0)
+                {
+                    Plugin.Log.LogError($"{Path.GetFileName(soundPath)} is empty? uhh...");
+                    continue;
+                }
+                
                 await Awaitable.EndOfFrameAsync();
+                await Awaitable.MainThreadAsync();
             }
-
-            if (request.result != UnityWebRequest.Result.Success)
+            else
             {
-                Plugin.Log.LogError(request.error);
-                continue;
+                ExternalAudioClipAsset asset = ExternalAudioClipAsset.LoadExternalClip(soundPath);
+                while (!asset.IsLoaded())
+                {
+                    await Awaitable.EndOfFrameAsync();
+                }
+                
+                float[] samples = new float[asset.LengthSamples];
+                asset.LoadAllData(samples);
+                
+                clip = AudioClip.Create(Path.GetFileName(soundPath), asset.LengthSamples, asset.Channels, asset.Frequency, false);
+                clip.SetData(samples, 0);    
             }
             
-            AudioClip? clip = DownloadHandlerAudioClip.GetContent(request);
-            if (clip == null)
-            {
-                Plugin.Log.LogError($"{Path.GetFileName(soundPath)} came back null? uhh...");
-                continue;
-            }
-
-            if (clip.loadState == AudioDataLoadState.Failed)
-            {
-                Plugin.Log.LogError($"{Path.GetFileName(soundPath)} failed to load? uhh...");
-                continue;
-            }
-            if (clip.samples == 0)
-            {
-                Plugin.Log.LogError($"{Path.GetFileName(soundPath)} is empty? uhh...");
-                continue;
-            }
-            
-#if DEBUG
             Plugin.Log.LogInfo($"{Path.GetFileName(soundPath)} has {clip.samples} samples");
-#endif
             clips.Add(clip);
         }
         
