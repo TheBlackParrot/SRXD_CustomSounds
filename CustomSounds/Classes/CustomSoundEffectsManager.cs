@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HarmonyLib;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -247,10 +246,10 @@ internal static class CustomSoundEffectsManager
                     await Awaitable.EndOfFrameAsync();
                 }
                 
-                float[] samples = new float[asset.LengthSamples];
+                float[] samples = new float[asset.LengthSamples * asset.Channels];
                 asset.LoadAllData(samples);
                 
-                clip = AudioClip.Create(Path.GetFileName(soundPath), asset.LengthSamples, asset.Channels, asset.Frequency, false);
+                clip = AudioClip.Create(Path.GetFileName(soundPath), asset.LengthSamples * asset.Channels, asset.Channels, asset.Frequency, false);
                 clip.SetData(samples, 0);    
             }
             
