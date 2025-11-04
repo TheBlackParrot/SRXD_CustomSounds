@@ -44,6 +44,20 @@ public partial class Plugin : BaseUnityPlugin
     private void OnEnable()
     {
         _harmony.PatchAll();
+        
+        Task.Run(async () =>
+        {
+            try
+            {
+                await Awaitable.MainThreadAsync();
+                await CustomSoundEffectsManager.Initialize();
+                await CustomSoundEffectsManager.InitializeSounds(ActivePackName.Value, false);
+            }
+            catch (Exception e)
+            {
+                Log.LogError(e);
+            }
+        });
     }
 
     private void OnDisable()
@@ -54,19 +68,6 @@ public partial class Plugin : BaseUnityPlugin
     private static void MainCameraOnCurrentCameraChanged(Camera obj)
     {
         MainCamera.OnCurrentCameraChanged -= MainCameraOnCurrentCameraChanged;
-        CustomSoundEffectsManager.Initialize();
-        
-        Task.Run(async () =>
-        {
-            try
-            {
-                await CustomSoundEffectsManager.InitializeSounds(ActivePackName.Value, false);
-            }
-            catch (Exception e)
-            {
-                Log.LogError(e);
-            }
-        });
         
         Task.Run(async () =>
         {

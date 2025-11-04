@@ -157,8 +157,14 @@ internal static class CustomSoundEffectsManager
 {
     internal static Dictionary<string, CustomSoundEffectList> SoundEffectLists = null!;
 
-    internal static void Initialize()
+    internal static async Task Initialize()
     {
+        while (SoundEffectAssets.Instance == null)
+        {
+            await Awaitable.EndOfFrameAsync();
+        }
+        
+        await Awaitable.MainThreadAsync();
         SoundEffectLists = new Dictionary<string, CustomSoundEffectList> { ["Default"] = new(SoundEffectAssets.Instance) };
     }
     
