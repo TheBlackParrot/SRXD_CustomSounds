@@ -14,6 +14,8 @@ namespace CustomSounds;
 public partial class Plugin
 {
     internal static ConfigEntry<string> ActivePackName = null!;
+    internal static ConfigEntry<int> AudioBufferLength = null!;
+    
     private const string TRANSLATION_PREFIX = $"{nameof(CustomSounds)}_";
 
     internal static readonly List<string> ValidPackNames = ["Default"];
@@ -26,6 +28,11 @@ public partial class Plugin
         ActivePackName =
             Config.Bind("General", nameof(ActivePackName), "Default", "Name of the active sound pack");
         TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}{nameof(ActivePackName)}", "Active sound pack");
+        
+        AudioBufferLength =
+            Config.Bind("General", nameof(AudioBufferLength), 300,
+                "Audio buffer length for hitsounds (higher = more sound dropouts, but longer audio cutoff; lower = less sound dropouts, but shorter audio cutoff)");
+        TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}{nameof(AudioBufferLength)}", "Hitsound audio buffer length (ms)");
     }
 
     private static void CreateModPage()
@@ -86,6 +93,28 @@ public partial class Plugin
             });
         });
         activePackNameInput.InputField.SetText(ActivePackName.Value);
+        #endregion
+        
+        #region AudioBufferLength
+        CustomGroup audioBufferLengthGroup = UIHelper.CreateGroup(modGroup, "AudioBufferLengthGroup");
+        audioBufferLengthGroup.LayoutDirection = Axis.Horizontal;
+        UIHelper.CreateLabel(audioBufferLengthGroup, "AudioBufferLengthLabel", $"{TRANSLATION_PREFIX}{nameof(AudioBufferLength)}");
+        CustomInputField audioBufferLengthInput = UIHelper.CreateInputField(audioBufferLengthGroup, nameof(AudioBufferLength), (_, newValue) =>
+        {
+            if (!int.TryParse(newValue, out int newIntValue))
+            {
+                return;
+            }
+            
+            if (newIntValue == AudioBufferLength.Value)
+            {
+                return;
+            }
+            
+            AudioBufferLength.Value = newIntValue;
+            NotificationSystemGUI.AddMessage("A game restart is required for this change to take effect.", 6f);
+        });
+        audioBufferLengthInput.InputField.SetText(AudioBufferLength.Value.ToString());
         #endregion
         
         UIHelper.CreateButton(modGroup, $"Open{MyPluginInfo.PLUGIN_NAME}RepositoryButton", $"{nameof(CustomSounds)}_GitHubButtonText", () =>

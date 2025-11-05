@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 using HarmonyLib;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -535,5 +537,22 @@ internal static class CustomSoundEffectsManager
 #if DEBUG
         Plugin.Log.LogInfo($"SoundEffectAssets.GetSoundEffect -- {soundEffectName}");
 #endif
+    }
+}
+
+[HarmonyPatch(typeof(PlayState), nameof(PlayState.FillFrameCallback))]
+internal static class SoundEffectTranspiler
+{
+    [UsedImplicitly]
+    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        List<CodeInstruction> codes = new(instructions);
+        
+        foreach (CodeInstruction t in codes.Where(t => t.opcode == OpCodes.Ldc_I4 && t.operand.ToString() == "300"))
+        {
+            t.operand = Plugin.AudioBufferLength.Value;
+        }
+        
+        return codes.AsEnumerable();
     }
 }
