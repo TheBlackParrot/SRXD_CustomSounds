@@ -58,6 +58,11 @@ public partial class Plugin : BaseUnityPlugin
                 Log.LogError(e);
             }
         });
+
+        AudioConfiguration config = AudioSettings.GetConfiguration();
+        config.numRealVoices = int.MaxValue;
+        config.numVirtualVoices = int.MaxValue;
+        AudioSettings.SetConfiguration(config);
     }
 
     private void OnDisable()

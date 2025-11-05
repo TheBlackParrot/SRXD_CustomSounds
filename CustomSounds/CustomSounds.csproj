@@ -55,11 +55,18 @@
         <Reference Include="System.Net.Http">
             <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\System.Net.Http.dll</HintPath>
         </Reference>
+        <Reference Include="SSD.Types">
+            <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\SSD.Types.dll</HintPath>
+        </Reference>
         <Reference Include="SSD.Game">
             <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\SSD.Game.dll</HintPath>
         </Reference>
         <Reference Include="SSD.Utility">
             <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\SSD.Utility.dll</HintPath>
+        </Reference>
+        <Reference Include="Spin.Game.TrackPlaybackSystem">
+            <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\Spin.Game.TrackPlaybackSystem.dll</HintPath>
+            <Publicize>true</Publicize>
         </Reference>
         <Reference Include="SpinCore">
             <HintPath>$(BaseGameDir)\BepInEx\plugins\SpinCore.dll</HintPath>
