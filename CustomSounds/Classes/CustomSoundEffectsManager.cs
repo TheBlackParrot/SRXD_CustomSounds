@@ -261,11 +261,15 @@ internal static class CustomSoundEffectsManager
                 clip.SetData(samples, 0);    
             }
             
+#if DEBUG
             Plugin.Log.LogInfo($"{Path.GetFileName(soundPath)} has {clip.samples} samples");
+#endif
             clips.Add(clip);
         }
         
+#if DEBUG
         Plugin.Log.LogInfo($"Found {clips.Count} audio clips");
+#endif
 
         return new SoundEffect
         {
