@@ -123,7 +123,7 @@ public partial class Plugin
         audioBufferLengthInput.InputField.SetText(AudioBufferLength.Value.ToString());
         #endregion
         
-        #region AudioBufferLength
+        #region MatchNoteVolumeMultiplier
         CustomGroup matchNoteVolumeMultiplierGroup = UIHelper.CreateGroup(modGroup, "MatchNoteVolumeMultiplierGroup");
         matchNoteVolumeMultiplierGroup.LayoutDirection = Axis.Horizontal;
         UIHelper.CreateLabel(matchNoteVolumeMultiplierGroup, "MatchNoteVolumeMultiplierLabel", $"{TRANSLATION_PREFIX}{nameof(MatchNoteVolumeMultiplier)}");
@@ -141,6 +141,17 @@ public partial class Plugin
             }
             
             MatchNoteVolumeMultiplier.Value = newFloatValue;
+            
+            SoundEffect? sound = CustomSoundEffectsManager.SoundEffectLists[ActivePackName.Value].MatchNoteHitSound;
+            if (sound == null)
+            {
+                return;
+            }
+            
+            SoundEffectAssets.Instance.coloredNoteSoundEffect.volume = newFloatValue;
+            CustomSoundEffectsManager.SoundEffectLists[ActivePackName.Value].MatchNoteHitSound = sound.Value with { volume = newFloatValue };
+            
+            SoundEffectAssets.Instance.coloredNoteSoundEffect.Play();
         });
         matchNoteVolumeMultiplierInput.InputField.SetText(MatchNoteVolumeMultiplier.Value.ToString(CultureInfo.CurrentCulture));
         #endregion

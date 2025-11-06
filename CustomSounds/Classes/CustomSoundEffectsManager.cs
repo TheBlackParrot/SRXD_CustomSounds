@@ -170,7 +170,7 @@ internal static class CustomSoundEffectsManager
         SoundEffectLists = new Dictionary<string, CustomSoundEffectList> { ["Default"] = new(SoundEffectAssets.Instance) };
     }
     
-    private static async Task<SoundEffect?> InitSoundEffectObject(string folder, float vol = 1f)
+    internal static async Task<SoundEffect?> InitSoundEffectObject(string folder, float vol = 1f)
     {
         Plugin.Log.LogInfo($"Initializing sound effects folder: {folder}");
         string soundFolder = Path.Combine(Plugin.DataPath, folder);
