@@ -16,7 +16,12 @@ public partial class Plugin
 {
     internal static ConfigEntry<string> ActivePackName = null!;
     internal static ConfigEntry<int> AudioBufferLength = null!;
+    
     internal static ConfigEntry<float> MatchNoteVolumeMultiplier = null!;
+    internal static ConfigEntry<float> TapNoteVolumeMultiplier = null!;
+    internal static ConfigEntry<float> BeatVolumeMultiplier = null!;
+    internal static ConfigEntry<float> SpinVolumeMultiplier = null!;
+    internal static ConfigEntry<float> ScratchVolumeMultiplier = null!;
     
     private const string TRANSLATION_PREFIX = $"{nameof(CustomSounds)}_";
 
@@ -25,6 +30,7 @@ public partial class Plugin
     private void RegisterConfigEntries()
     {
         TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}Name", nameof(CustomSounds));
+        TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}Volume", "Volume Settings");
         TranslationHelper.AddTranslation($"{nameof(CustomSounds)}_GitHubButtonText", $"{nameof(CustomSounds)} Releases (GitHub)");
         
         ActivePackName =
@@ -39,6 +45,18 @@ public partial class Plugin
         MatchNoteVolumeMultiplier =
             Config.Bind("Volume", nameof(MatchNoteVolumeMultiplier), 0.8f, "Volume multiplier for match note hitsounds");
         TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}{nameof(MatchNoteVolumeMultiplier)}", "Match note volume multiplier");
+        TapNoteVolumeMultiplier =
+            Config.Bind("Volume", nameof(TapNoteVolumeMultiplier), 1f, "Volume multiplier for tap note hitsounds");
+        TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}{nameof(TapNoteVolumeMultiplier)}", "Tap note volume multiplier");
+        BeatVolumeMultiplier =
+            Config.Bind("Volume", nameof(BeatVolumeMultiplier), 1f, "Volume multiplier for beat hitsounds");
+        TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}{nameof(BeatVolumeMultiplier)}", "Beat volume multiplier");
+        SpinVolumeMultiplier =
+            Config.Bind("Volume", nameof(SpinVolumeMultiplier), 1f, "Volume multiplier for spinner hitsounds");
+        TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}{nameof(SpinVolumeMultiplier)}", "Spinner volume multiplier");
+        ScratchVolumeMultiplier =
+            Config.Bind("Volume", nameof(ScratchVolumeMultiplier), 1f, "Volume multiplier for scratcher hitsounds");
+        TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}{nameof(ScratchVolumeMultiplier)}", "Scratcher volume multiplier");
     }
 
     private static void CreateModPage()
@@ -123,6 +141,8 @@ public partial class Plugin
         audioBufferLengthInput.InputField.SetText(AudioBufferLength.Value.ToString());
         #endregion
         
+        UIHelper.CreateSectionHeader(modGroup, "ModGroupHeader", $"{TRANSLATION_PREFIX}Volume", false);
+        
         #region MatchNoteVolumeMultiplier
         CustomGroup matchNoteVolumeMultiplierGroup = UIHelper.CreateGroup(modGroup, "MatchNoteVolumeMultiplierGroup");
         matchNoteVolumeMultiplierGroup.LayoutDirection = Axis.Horizontal;
@@ -141,19 +161,101 @@ public partial class Plugin
             }
             
             MatchNoteVolumeMultiplier.Value = newFloatValue;
-            
-            SoundEffect? sound = CustomSoundEffectsManager.SoundEffectLists[ActivePackName.Value].MatchNoteHitSound;
-            if (sound == null)
-            {
-                return;
-            }
-            
-            SoundEffectAssets.Instance.coloredNoteSoundEffect.volume = newFloatValue;
-            CustomSoundEffectsManager.SoundEffectLists[ActivePackName.Value].MatchNoteHitSound = sound.Value with { volume = newFloatValue };
-            
-            SoundEffectAssets.Instance.coloredNoteSoundEffect.Play();
+            CustomSoundEffectsManager.ModifyVolume(CustomSoundEffectsManager.DynamicVolumeSounds.MatchNoteHitSound, newFloatValue);
         });
         matchNoteVolumeMultiplierInput.InputField.SetText(MatchNoteVolumeMultiplier.Value.ToString(CultureInfo.CurrentCulture));
+        #endregion
+        
+        #region TapNoteVolumeMultiplier
+        CustomGroup tapNoteVolumeMultiplierGroup = UIHelper.CreateGroup(modGroup, "TapNoteVolumeMultiplierGroup");
+        tapNoteVolumeMultiplierGroup.LayoutDirection = Axis.Horizontal;
+        UIHelper.CreateLabel(tapNoteVolumeMultiplierGroup, "TapNoteVolumeMultiplierLabel", $"{TRANSLATION_PREFIX}{nameof(TapNoteVolumeMultiplier)}");
+        CustomInputField tapNoteVolumeMultiplierInput = UIHelper.CreateInputField(tapNoteVolumeMultiplierGroup,
+            nameof(TapNoteVolumeMultiplier), (_, newValue) =>
+            {
+                if (!float.TryParse(newValue, out float newFloatValue))
+                {
+                    return;
+                }
+            
+                if (Mathf.Approximately(newFloatValue, TapNoteVolumeMultiplier.Value))
+                {
+                    return;
+                }
+            
+                TapNoteVolumeMultiplier.Value = newFloatValue;
+                CustomSoundEffectsManager.ModifyVolume(CustomSoundEffectsManager.DynamicVolumeSounds.TapNoteHitSound, newFloatValue);
+            });
+        tapNoteVolumeMultiplierInput.InputField.SetText(TapNoteVolumeMultiplier.Value.ToString(CultureInfo.CurrentCulture));
+        #endregion
+        
+        #region BeatVolumeMultiplier
+        CustomGroup beatVolumeMultiplierGroup = UIHelper.CreateGroup(modGroup, "BeatVolumeMultiplierGroup");
+        beatVolumeMultiplierGroup.LayoutDirection = Axis.Horizontal;
+        UIHelper.CreateLabel(beatVolumeMultiplierGroup, "BeatVolumeMultiplierLabel", $"{TRANSLATION_PREFIX}{nameof(BeatVolumeMultiplier)}");
+        CustomInputField beatVolumeMultiplierInput = UIHelper.CreateInputField(beatVolumeMultiplierGroup,
+            nameof(BeatVolumeMultiplier), (_, newValue) =>
+            {
+                if (!float.TryParse(newValue, out float newFloatValue))
+                {
+                    return;
+                }
+            
+                if (Mathf.Approximately(newFloatValue, BeatVolumeMultiplier.Value))
+                {
+                    return;
+                }
+            
+                BeatVolumeMultiplier.Value = newFloatValue;
+                CustomSoundEffectsManager.ModifyVolume(CustomSoundEffectsManager.DynamicVolumeSounds.BeatHitSound, newFloatValue);
+            });
+        beatVolumeMultiplierInput.InputField.SetText(BeatVolumeMultiplier.Value.ToString(CultureInfo.CurrentCulture));
+        #endregion
+        
+        #region SpinVolumeMultiplier
+        CustomGroup spinVolumeMultiplierGroup = UIHelper.CreateGroup(modGroup, "SpinVolumeMultiplierGroup");
+        spinVolumeMultiplierGroup.LayoutDirection = Axis.Horizontal;
+        UIHelper.CreateLabel(spinVolumeMultiplierGroup, "SpinVolumeMultiplierLabel", $"{TRANSLATION_PREFIX}{nameof(SpinVolumeMultiplier)}");
+        CustomInputField spinVolumeMultiplierInput = UIHelper.CreateInputField(spinVolumeMultiplierGroup,
+            nameof(SpinVolumeMultiplier), (_, newValue) =>
+            {
+                if (!float.TryParse(newValue, out float newFloatValue))
+                {
+                    return;
+                }
+            
+                if (Mathf.Approximately(newFloatValue, SpinVolumeMultiplier.Value))
+                {
+                    return;
+                }
+            
+                SpinVolumeMultiplier.Value = newFloatValue;
+                CustomSoundEffectsManager.ModifyVolume(CustomSoundEffectsManager.DynamicVolumeSounds.SpinHitSound, newFloatValue);
+            });
+        spinVolumeMultiplierInput.InputField.SetText(SpinVolumeMultiplier.Value.ToString(CultureInfo.CurrentCulture));
+        #endregion
+        
+        #region ScratchVolumeMultiplier
+        CustomGroup scratchVolumeMultiplierGroup = UIHelper.CreateGroup(modGroup, "ScratchVolumeMultiplierGroup");
+        scratchVolumeMultiplierGroup.LayoutDirection = Axis.Horizontal;
+        UIHelper.CreateLabel(scratchVolumeMultiplierGroup, "ScratchVolumeMultiplierLabel", $"{TRANSLATION_PREFIX}{nameof(ScratchVolumeMultiplier)}");
+        CustomInputField scratchVolumeMultiplierInput = UIHelper.CreateInputField(scratchVolumeMultiplierGroup,
+            nameof(ScratchVolumeMultiplier), (_, newValue) =>
+            {
+                if (!float.TryParse(newValue, out float newFloatValue))
+                {
+                    return;
+                }
+            
+                if (Mathf.Approximately(newFloatValue, ScratchVolumeMultiplier.Value))
+                {
+                    return;
+                }
+            
+                ScratchVolumeMultiplier.Value = newFloatValue;
+                CustomSoundEffectsManager.ModifyVolume(CustomSoundEffectsManager.DynamicVolumeSounds.ScratchHitSound, newFloatValue);
+            });
+        scratchVolumeMultiplierInput.InputField.SetText(ScratchVolumeMultiplier.Value.ToString(CultureInfo.CurrentCulture));
         #endregion
         
         UIHelper.CreateButton(modGroup, $"Open{MyPluginInfo.PLUGIN_NAME}RepositoryButton", $"{nameof(CustomSounds)}_GitHubButtonText", () =>

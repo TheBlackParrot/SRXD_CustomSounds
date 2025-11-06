@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
@@ -321,10 +323,10 @@ internal static class CustomSoundEffectsManager
         CustomSoundEffectList? assets = SoundEffectLists[packFolder];
         
         assets.MatchNoteHitSound = await InitSoundEffectObject($"{packFolder}/MatchNoteHit", Plugin.MatchNoteVolumeMultiplier.Value);
-        assets.TapNoteHitSound = await InitSoundEffectObject($"{packFolder}/TapNoteHit");
-        assets.BeatHitSound = await InitSoundEffectObject($"{packFolder}/BeatHit");
-        assets.SpinHitSound = await InitSoundEffectObject($"{packFolder}/SpinHit");
-        assets.ScratchHitSound = await InitSoundEffectObject($"{packFolder}/ScratchHit");
+        assets.TapNoteHitSound = await InitSoundEffectObject($"{packFolder}/TapNoteHit", Plugin.TapNoteVolumeMultiplier.Value);
+        assets.BeatHitSound = await InitSoundEffectObject($"{packFolder}/BeatHit", Plugin.BeatVolumeMultiplier.Value);
+        assets.SpinHitSound = await InitSoundEffectObject($"{packFolder}/SpinHit", Plugin.SpinVolumeMultiplier.Value);
+        assets.ScratchHitSound = await InitSoundEffectObject($"{packFolder}/ScratchHit", Plugin.ScratchVolumeMultiplier.Value);
         
         assets.VoiceReadySound = await InitSoundEffectObject($"{packFolder}/AnnouncerReady");
         assets.Voice3Sound = await InitSoundEffectObject($"{packFolder}/Announcer3");
@@ -372,6 +374,65 @@ internal static class CustomSoundEffectsManager
         {
             NotificationSystemGUI.AddMessage($"Loaded sound pack <b>{packFolder}</b>!");
         }
+    }
+
+    internal enum DynamicVolumeSounds
+    {
+        MatchNoteHitSound = 1,
+        TapNoteHitSound = 2,
+        BeatHitSound = 3,
+        SpinHitSound = 4,
+        ScratchHitSound = 5
+    }
+
+    [SuppressMessage("Method Declaration", "Harmony003:Harmony non-ref patch parameters modified")] // what
+    internal static void ModifyVolume(DynamicVolumeSounds which, float volume)
+    {
+        string packName = Plugin.ActivePackName.Value;
+
+        SoundEffect? packListSound = which switch
+        {
+            DynamicVolumeSounds.MatchNoteHitSound => SoundEffectLists[packName].MatchNoteHitSound,
+            DynamicVolumeSounds.TapNoteHitSound => SoundEffectLists[packName].TapNoteHitSound,
+            DynamicVolumeSounds.BeatHitSound => SoundEffectLists[packName].BeatHitSound,
+            DynamicVolumeSounds.SpinHitSound => SoundEffectLists[packName].SpinHitSound,
+            DynamicVolumeSounds.ScratchHitSound => SoundEffectLists[packName].ScratchHitSound,
+            _ => throw new ArgumentOutOfRangeException(nameof(which), which, null)
+        };
+
+        if (packListSound == null)
+        {
+            return;
+        }
+        packListSound = packListSound.Value with { volume = volume };
+
+        switch (which)
+        {
+            case DynamicVolumeSounds.MatchNoteHitSound:
+                SoundEffectLists[packName].MatchNoteHitSound = packListSound;
+                SoundEffectAssets.Instance.coloredNoteSoundEffect = packListSound.Value;
+                break;
+            case DynamicVolumeSounds.TapNoteHitSound:
+                SoundEffectLists[packName].TapNoteHitSound = packListSound;
+                SoundEffectAssets.Instance.coloredHitNoteSoundEffect = packListSound.Value;
+                break;
+            case DynamicVolumeSounds.BeatHitSound:
+                SoundEffectLists[packName].BeatHitSound = packListSound;
+                SoundEffectAssets.Instance.drumHitSoundEffect = packListSound.Value;
+                break;
+            case DynamicVolumeSounds.SpinHitSound:
+                SoundEffectLists[packName].SpinHitSound = packListSound;
+                SoundEffectAssets.Instance.spinnerNoteSoundEffect = packListSound.Value;
+                break;
+            case DynamicVolumeSounds.ScratchHitSound:
+                SoundEffectLists[packName].ScratchHitSound = packListSound;
+                SoundEffectAssets.Instance.scratchNoteSoundEffect = packListSound.Value;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(which), which, null);
+        }
+        
+        packListSound.Value.Play();
     }
     
 #if DEBUG
