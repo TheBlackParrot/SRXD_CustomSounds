@@ -320,7 +320,7 @@ internal static class CustomSoundEffectsManager
 
         CustomSoundEffectList? assets = SoundEffectLists[packFolder];
         
-        assets.MatchNoteHitSound = await InitSoundEffectObject($"{packFolder}/MatchNoteHit", 0.75f);
+        assets.MatchNoteHitSound = await InitSoundEffectObject($"{packFolder}/MatchNoteHit", Plugin.MatchNoteVolumeMultiplier.Value);
         assets.TapNoteHitSound = await InitSoundEffectObject($"{packFolder}/TapNoteHit");
         assets.BeatHitSound = await InitSoundEffectObject($"{packFolder}/BeatHit");
         assets.SpinHitSound = await InitSoundEffectObject($"{packFolder}/SpinHit");

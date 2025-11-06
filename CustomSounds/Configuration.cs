@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ public partial class Plugin
 {
     internal static ConfigEntry<string> ActivePackName = null!;
     internal static ConfigEntry<int> AudioBufferLength = null!;
+    internal static ConfigEntry<float> MatchNoteVolumeMultiplier = null!;
     
     private const string TRANSLATION_PREFIX = $"{nameof(CustomSounds)}_";
 
@@ -33,6 +35,10 @@ public partial class Plugin
             Config.Bind("General", nameof(AudioBufferLength), 300,
                 "Audio buffer length for hitsounds (higher = more sound dropouts, but longer audio cutoff; lower = less sound dropouts, but shorter audio cutoff)");
         TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}{nameof(AudioBufferLength)}", "Hitsound audio buffer length (ms)");
+        
+        MatchNoteVolumeMultiplier =
+            Config.Bind("Volume", nameof(MatchNoteVolumeMultiplier), 0.8f, "Volume multiplier for match note hitsounds");
+        TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}{nameof(MatchNoteVolumeMultiplier)}", "Match note volume multiplier");
     }
 
     private static void CreateModPage()
@@ -115,6 +121,28 @@ public partial class Plugin
             NotificationSystemGUI.AddMessage("A game restart is required for this change to take effect.", 6f);
         });
         audioBufferLengthInput.InputField.SetText(AudioBufferLength.Value.ToString());
+        #endregion
+        
+        #region AudioBufferLength
+        CustomGroup matchNoteVolumeMultiplierGroup = UIHelper.CreateGroup(modGroup, "MatchNoteVolumeMultiplierGroup");
+        matchNoteVolumeMultiplierGroup.LayoutDirection = Axis.Horizontal;
+        UIHelper.CreateLabel(matchNoteVolumeMultiplierGroup, "MatchNoteVolumeMultiplierLabel", $"{TRANSLATION_PREFIX}{nameof(MatchNoteVolumeMultiplier)}");
+        CustomInputField matchNoteVolumeMultiplierInput = UIHelper.CreateInputField(matchNoteVolumeMultiplierGroup,
+            nameof(MatchNoteVolumeMultiplier), (_, newValue) =>
+        {
+            if (!float.TryParse(newValue, out float newFloatValue))
+            {
+                return;
+            }
+            
+            if (Mathf.Approximately(newFloatValue, MatchNoteVolumeMultiplier.Value))
+            {
+                return;
+            }
+            
+            MatchNoteVolumeMultiplier.Value = newFloatValue;
+        });
+        matchNoteVolumeMultiplierInput.InputField.SetText(MatchNoteVolumeMultiplier.Value.ToString(CultureInfo.CurrentCulture));
         #endregion
         
         UIHelper.CreateButton(modGroup, $"Open{MyPluginInfo.PLUGIN_NAME}RepositoryButton", $"{nameof(CustomSounds)}_GitHubButtonText", () =>
