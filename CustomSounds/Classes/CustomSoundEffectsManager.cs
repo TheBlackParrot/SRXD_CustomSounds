@@ -447,6 +447,10 @@ internal static class CustomSoundEffectsManager
         {
             return;
         }
+        if (soundEffect.clips.Length == 0)
+        {
+            return;
+        }
         if (soundEffect.clips[0] == null)
         {
             return;
