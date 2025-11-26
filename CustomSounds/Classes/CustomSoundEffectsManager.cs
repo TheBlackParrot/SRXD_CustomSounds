@@ -256,7 +256,7 @@ internal static class CustomSoundEffectsManager
                     await Awaitable.EndOfFrameAsync();
                 }
                 
-                float[] samples = new float[asset.LengthSamples];
+                float[] samples = new float[asset.LengthSamples * 2];
                 asset.LoadAllData(samples);
                 
                 clip = AudioClip.Create(Path.GetFileName(soundPath), asset.LengthSamples, asset.Channels, asset.Frequency, false);
