@@ -58,6 +58,9 @@ internal class CustomSoundEffectList
     internal SoundEffect? TrackCompleteCrowdSound;
     
     internal SoundEffect? EditorClapSound;
+    
+    // Custom sounds
+    internal SoundEffect? GamePausedSound;
 #pragma warning restore CS0649
 
     internal CustomSoundEffectList() {}
@@ -366,6 +369,9 @@ internal static class CustomSoundEffectsManager
         assets.TrackCompleteCrowdSound = await InitSoundEffectObject($"{packFolder}/TrackCompleteCrowd"); // unused?
         
         assets.EditorClapSound = await InitSoundEffectObject($"{packFolder}/EditorClap");
+        
+        // Custom sounds
+        assets.GamePausedSound = await InitSoundEffectObject($"{packFolder}/GamePaused");
         
         Plugin.ActivePackName.Value = packFolder;
         assets.SetSoundAssets();

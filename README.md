@@ -16,6 +16,9 @@ Create any of these sub-folders inside a folder within `Spin Rhythm/BepInEx/conf
 > [!NOTE]
 > All folders are optional, defaults will be used if the folder is not present.
 
+### Default / Base Game triggers
+These sound triggers are present in the game unmodded:
+
 | Folder                        | Modifies                                                                                                                                                                             |
 |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **AnnouncerReady**            | Announcer saying "Ready?" once a map loads                                                                                                                                           |
@@ -44,5 +47,12 @@ Create any of these sub-folders inside a folder within `Spin Rhythm/BepInEx/conf
 | **CrowdFailure**              | Sound that plays when failing a map                                                                                                                                                  |
 | **ResultsMedalImpact**        | Impact sound that plays when the medal is revealed for your rank on the results screen                                                                                               |
 | **EditorClap**                | Clap sound used in the editor                                                                                                                                                        |
+
+### Custom triggers
+These triggers are added by the mod:
+
+| Folder         | Event                           |
+|----------------|---------------------------------|
+| **GamePaused** | Pausing the game while in a map |
 
 The mod will look for audio files ending in `.mp3`, `.ogg`, and `.wav`. Empty folders will disable the sound entirely.
