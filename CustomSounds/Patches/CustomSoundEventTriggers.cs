@@ -4,7 +4,7 @@ using HarmonyLib;
 namespace CustomSounds.Patches;
 
 [HarmonyPatch]
-public static class CustomSoundTriggers
+public static class CustomSoundEventTriggers
 {
     private static CustomSoundEffectList SoundList => CustomSoundEffectsManager.SoundEffectLists[Plugin.ActivePackName.Value];
     

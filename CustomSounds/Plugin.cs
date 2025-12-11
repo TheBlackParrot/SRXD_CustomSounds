@@ -65,7 +65,7 @@ public partial class Plugin : BaseUnityPlugin
         config.numVirtualVoices = int.MaxValue;
         AudioSettings.SetConfiguration(config);
 
-        Track.OnStartedPlayingTrack += (_, _) => CustomSoundTriggers.PreviousNoteTimingAccuracy = NoteTimingAccuracy.Pending;
+        Track.OnStartedPlayingTrack += (_, _) => CustomSoundEventTriggers.PreviousNoteTimingAccuracy = NoteTimingAccuracy.Pending;
     }
 
     private void OnDisable()
