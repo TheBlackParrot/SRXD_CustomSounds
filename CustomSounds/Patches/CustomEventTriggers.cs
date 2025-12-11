@@ -16,4 +16,15 @@ public static class CustomSoundTriggers
             SoundEffectPlayer.Instance.PlayOneShot(soundList.GamePausedSound.Value);
         }
     }
+    
+    [HarmonyPatch(typeof(Track), nameof(Track.HandleUnpauseGame))]
+    [HarmonyPostfix]
+    private static void HandleUnpauseGamePostfix()
+    {
+        CustomSoundEffectList soundList = CustomSoundEffectsManager.SoundEffectLists[Plugin.ActivePackName.Value];
+        if (soundList.GameResumedSound != null)
+        {
+            SoundEffectPlayer.Instance.PlayOneShot(soundList.GameResumedSound.Value);
+        }
+    }
 }
