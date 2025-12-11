@@ -58,15 +58,10 @@ public static class CustomSoundEventTriggers
         PreviousNoteTimingAccuracy = accuracy;
     }
     
-    [HarmonyPatch(typeof(ScoreState), nameof(ScoreState.ClearMultiplier))]
+    [HarmonyPatch(typeof(ScoreState), nameof(ScoreState.AddOverbeat))]
     [HarmonyPostfix]
-    private static void ClearMultiplierPostfix(bool wasFromOverbeat)
+    private static void AddOverbeatPostfix()
     {
-        if (!wasFromOverbeat)
-        {
-            return;
-        }
-        
         if (SoundList.OverbeatHitSound != null)
         {
             SoundEffectPlayer.Instance.PlayOneShot(SoundList.OverbeatHitSound.Value);
