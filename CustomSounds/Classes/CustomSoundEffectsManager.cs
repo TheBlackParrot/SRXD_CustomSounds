@@ -62,6 +62,8 @@ internal class CustomSoundEffectList
     // Custom sounds
     internal SoundEffect? GamePausedSound;
     internal SoundEffect? GameResumedSound;
+    internal SoundEffect? NoteMissedSound;
+    internal SoundEffect? OverbeatHitSound;
 #pragma warning restore CS0649
 
     internal CustomSoundEffectList() {}
@@ -374,6 +376,8 @@ internal static class CustomSoundEffectsManager
         // Custom sounds
         assets.GamePausedSound = await InitSoundEffectObject($"{packFolder}/GamePaused");
         assets.GameResumedSound = await InitSoundEffectObject($"{packFolder}/GameResumed");
+        assets.NoteMissedSound = await InitSoundEffectObject($"{packFolder}/NoteMissed");
+        assets.OverbeatHitSound = await InitSoundEffectObject($"{packFolder}/OverbeatHit");
         
         Plugin.ActivePackName.Value = packFolder;
         assets.SetSoundAssets();

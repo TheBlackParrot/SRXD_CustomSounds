@@ -51,9 +51,11 @@ These sound triggers are present in the game unmodded:
 ### Custom triggers
 These triggers are added by the mod:
 
-| Folder          | Event                                       |
-|-----------------|---------------------------------------------|
-| **GamePaused**  | Pausing the game while in a map             |
-| **GameResumed** | Resuming from the pause menu while in a map |
+| Folder          | Event                                              |
+|-----------------|----------------------------------------------------|
+| **GamePaused**  | Pausing the game while in a map                    |
+| **GameResumed** | Resuming from the pause menu while in a map        |
+| **NoteMissed**  | Missing the first note in a string of missed notes |
+| **OverbeatHit** | "Hitting" an overbeat                              |
 
 The mod will look for audio files ending in `.mp3`, `.ogg`, and `.wav`. Empty folders will disable the sound entirely.

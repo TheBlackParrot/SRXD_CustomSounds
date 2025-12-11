@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BepInEx;
 using BepInEx.Logging;
 using CustomSounds.Classes;
+using CustomSounds.Patches;
 using HarmonyLib;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -63,6 +64,8 @@ public partial class Plugin : BaseUnityPlugin
         config.numRealVoices = int.MaxValue;
         config.numVirtualVoices = int.MaxValue;
         AudioSettings.SetConfiguration(config);
+
+        Track.OnStartedPlayingTrack += (_, _) => CustomSoundTriggers.PreviousNoteTimingAccuracy = NoteTimingAccuracy.Pending;
     }
 
     private void OnDisable()
