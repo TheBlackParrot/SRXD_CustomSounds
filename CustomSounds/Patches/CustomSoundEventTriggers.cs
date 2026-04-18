@@ -83,6 +83,11 @@ public static class CustomSoundEventTriggers
                 return;
             }
 
+            if (SoundList.HealthRecoveredSound != null && !value && Track.IsPlaying)
+            {
+                SoundEffectPlayer.Instance.PlayOneShot(SoundList.HealthRecoveredSound.Value);
+            }
+
             if (SoundList.HealthLowSound == null)
             {
                 return;
@@ -91,7 +96,6 @@ public static class CustomSoundEventTriggers
             {
                 _healthLowAudioSource = SoundEffectPlayer.Instance.PlayLooping(SoundList.HealthLowSound.Value, 0f);
             }
-
             _healthLowTargetVolume = (value ? 1f : 0f);
         }
     }
@@ -132,7 +136,7 @@ public static class CustomSoundEventTriggers
         if (_healthLowAudioSource != null)
         {
             _healthLowAudioSource.volume =
-                Mathf.Lerp(_healthLowAudioSource.volume, _healthLowTargetVolume, 0.05f);
+                Mathf.Lerp(_healthLowAudioSource.volume, _healthLowTargetVolume, 0.1f);
         }
 
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault (intentional)

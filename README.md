@@ -51,13 +51,14 @@ These sound triggers are present in the game unmodded:
 ### Custom triggers
 These triggers are added by the mod:
 
-| Folder          | Type     | Event                                                                |
-|-----------------|----------|----------------------------------------------------------------------|
-| **GamePaused**  | One-shot | Pausing the game while in a map                                      |
-| **GameResumed** | One-shot | Resuming from the pause menu while in a map                          |
-| **NoteMissed**  | One-shot | Missing the first note in a string of missed notes                   |
-| **OverbeatHit** | One-shot | "Hitting" an overbeat                                                |
-| **HealthLow**   | Looping  | Health is less than 120 (out of 600, when the health flashers start) |
-| **Died**        | One-shot | Health reaches 0                                                     |
+| Folder              | Type     | Event                                                  |
+|---------------------|----------|--------------------------------------------------------|
+| **GamePaused**      | One-shot | Pausing the game while in a map                        |
+| **GameResumed**     | One-shot | Resuming from the pause menu while in a map            |
+| **NoteMissed**      | One-shot | Missing the first note in a string of missed notes     |
+| **OverbeatHit**     | One-shot | "Hitting" an overbeat                                  |
+| **HealthLow**       | Looping  | Health is less than 120 (when the health alerts start) |
+| **HealthRecovered** | One-shot | Health recovers above 120 after health alerts start    |
+| **Died**            | One-shot | Health reaches 0                                       |
 
 The mod will look for audio files ending in `.mp3`, `.ogg`, and `.wav`. Empty folders will disable the sound entirely.
