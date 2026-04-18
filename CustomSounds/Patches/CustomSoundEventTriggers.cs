@@ -1,4 +1,3 @@
-using System;
 using CustomSounds.Classes;
 using HarmonyLib;
 using UnityEngine;
@@ -95,7 +94,29 @@ public static class CustomSoundEventTriggers
             _healthLowAudioSource.volume = (value ? 1f : 0f);
         }
     }
-    private static bool _isDead;
+    private static bool IsDead
+    {
+        get;
+        set
+        {
+            bool oldValue = field;
+            field = value;
+            if (oldValue == value)
+            {
+                return;
+            }
+            
+            if (SoundList.DiedSound == null)
+            {
+                return;
+            }
+
+            if (value)
+            {
+                SoundEffectPlayer.Instance.PlayOneShot(SoundList.DiedSound.Value);
+            }
+        }
+    }
     
     [HarmonyPatch(typeof(DomeHud), nameof(DomeHud.LateUpdate))]
     [HarmonyPostfix]
@@ -118,18 +139,24 @@ public static class CustomSoundEventTriggers
             case PlayStateStatus.Success:
             case PlayStateStatus.None:
                 IsNearlyDead = false;
-                _isDead = false;
+                IsDead = false;
                 return;
         }
 
-        bool healthLowState = __instance.animators[0].animator.GetBool(DomeHud.Hashes.HealthLow);
-        bool healthDiedState = __instance.animators[0].animator.GetBool(DomeHud.Hashes.HealthDied);
+        // the game loops through all animators on the DomeHud instance when setting these bool values, so it doesn't matter which one we select
+        Animator animator = __instance.animators[0].animator;
 
-        IsNearlyDead = healthLowState switch
+        IsNearlyDead = animator.GetBool(DomeHud.Hashes.HealthLow) switch
         {
             true when !IsNearlyDead => true,
             false => false,
             _ => IsNearlyDead
+        };
+        IsDead = animator.GetBool(DomeHud.Hashes.HealthDied) switch
+        {
+            true when !IsDead => true,
+            false => false,
+            _ => IsDead
         };
     }
 }
