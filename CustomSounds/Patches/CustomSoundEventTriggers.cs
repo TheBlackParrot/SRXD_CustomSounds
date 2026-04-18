@@ -70,6 +70,7 @@ public static class CustomSoundEventTriggers
     }
 
     private static AudioSource? _healthLowAudioSource;
+    private static float _healthLowTargetVolume;
     private static bool IsNearlyDead
     {
         get;
@@ -91,7 +92,7 @@ public static class CustomSoundEventTriggers
                 _healthLowAudioSource = SoundEffectPlayer.Instance.PlayLooping(SoundList.HealthLowSound.Value, 0f);
             }
 
-            _healthLowAudioSource.volume = (value ? 1f : 0f);
+            _healthLowTargetVolume = (value ? 1f : 0f);
         }
     }
     private static bool IsDead
@@ -127,9 +128,11 @@ public static class CustomSoundEventTriggers
         {
             return;
         }
-        if (SoundList.HealthLowSound == null)
+
+        if (_healthLowAudioSource != null)
         {
-            return;
+            _healthLowAudioSource.volume =
+                Mathf.Lerp(_healthLowAudioSource.volume, _healthLowTargetVolume, 0.05f);
         }
 
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault (intentional)
