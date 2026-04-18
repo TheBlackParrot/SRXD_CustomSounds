@@ -83,7 +83,7 @@ public static class CustomSoundEventTriggers
                 return;
             }
 
-            if (SoundList.HealthRecoveredSound != null && !value && Track.IsPlaying)
+            if (SoundList.HealthRecoveredSound != null && !value && Track.IsPlaying && PlayState.Active.health >= 120)
             {
                 SoundEffectPlayer.Instance.PlayOneShot(SoundList.HealthRecoveredSound.Value);
             }
