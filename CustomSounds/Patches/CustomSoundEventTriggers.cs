@@ -136,7 +136,9 @@ public static class CustomSoundEventTriggers
         if (_healthLowAudioSource != null)
         {
             _healthLowAudioSource.volume =
-                Mathf.Lerp(_healthLowAudioSource.volume, _healthLowTargetVolume, 0.1f);
+                Mathf.Lerp(_healthLowAudioSource.volume,
+                    (Track.IsPaused ? 0f : _healthLowTargetVolume),
+                    (Track.IsPaused ? 0.25f : 0.1f));
         }
 
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault (intentional)
